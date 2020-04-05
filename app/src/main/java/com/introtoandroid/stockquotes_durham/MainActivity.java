@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity{
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StockRetrieveTask task = new StockRetrieveTask(symbolOutput, nameOutput, priceOutput, timeOutput, changeOutput, weekOutput);
+                StockRetrieveTask task = new StockRetrieveTask(symbolOutput, nameOutput, priceOutput, timeOutput, changeOutput, weekOutput, getApplicationContext());
                 task.execute(nameInput.getText().toString());
 
             }

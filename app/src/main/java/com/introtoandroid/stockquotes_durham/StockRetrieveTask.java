@@ -18,7 +18,7 @@ public class StockRetrieveTask extends AsyncTask<String, Void, Stock> {
     public StockRetrieveTask(Activity main_activity){
         this.activity = main_activity;
     }*/
-    //Context context;
+    Context context;
     TextView symbolOutput;
     TextView nameOutput;
     TextView priceOutput;
@@ -32,14 +32,14 @@ public class StockRetrieveTask extends AsyncTask<String, Void, Stock> {
     //public AsyncResponse delegate = null;
 
 
-    public StockRetrieveTask(TextView symbolOutput, TextView nameOutput, TextView priceOutput, TextView timeOutput, TextView changeOutput, TextView weekOutput){
+    public StockRetrieveTask(TextView symbolOutput, TextView nameOutput, TextView priceOutput, TextView timeOutput, TextView changeOutput, TextView weekOutput, Context context){
         this.symbolOutput = symbolOutput;
         this.nameOutput = nameOutput;
         this.priceOutput = priceOutput;
         this.timeOutput = timeOutput;
         this.changeOutput = changeOutput;
         this.weekOutput = weekOutput;
-        //this.context = context;
+        this.context = context;
         //this.delegate = delegate;
 
 
@@ -53,7 +53,9 @@ public class StockRetrieveTask extends AsyncTask<String, Void, Stock> {
             stock.load();
             Log.i("Stock.load()", "after load()");
         } catch (IOException e) {
+            //Toast.makeText(this, "Error in retrieving stock symbol", Toast.LENGTH_LONG).show();
             e.printStackTrace();
+
         }
         return stock;
     }
@@ -65,12 +67,16 @@ public class StockRetrieveTask extends AsyncTask<String, Void, Stock> {
         Log.i("Stock.load()", "week output" + stock.getRange());
         //symbolOutput.setText(stock.getSymbol());
         //delegate.processFinish(stock);
-        symbolOutput.setText(stock.getSymbol());
-        nameOutput.setText(stock.getName());
-        priceOutput.setText(stock.getLastTradePrice());
-        timeOutput.setText(stock.getLastTradeTime());
-        changeOutput.setText(stock.getChange());
-        weekOutput.setText(stock.getRange());
-
+        if(stock.getName() != null) {
+            symbolOutput.setText(stock.getSymbol());
+            nameOutput.setText(stock.getName());
+            priceOutput.setText(stock.getLastTradePrice());
+            timeOutput.setText(stock.getLastTradeTime());
+            changeOutput.setText(stock.getChange());
+            weekOutput.setText(stock.getRange());
+        }
+        else {
+            Toast.makeText(context, "Error in retrieving stock symbol", Toast.LENGTH_SHORT).show();
+        }
     }
 }
