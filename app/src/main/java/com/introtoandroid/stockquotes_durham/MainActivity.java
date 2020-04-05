@@ -4,14 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.storage.StorageManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 import edu.cofc.stock.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
+    //implements AsyncResponse
 
     EditText nameInput;
     TextView symbolOutput;
@@ -21,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     TextView changeOutput;
     TextView weekOutput;
     Button submit;
+    //StockRetrieveTask task = new StockRetrieveTask();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +41,13 @@ public class MainActivity extends AppCompatActivity {
         weekOutput = findViewById(R.id.weekOutput);
         submit = findViewById(R.id.submit);
 
+        //task.delegate = this;
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                StockRetrieveTask task = new StockRetrieveTask(symbolOutput, nameOutput, priceOutput, timeOutput, changeOutput, weekOutput);
+                task.execute(nameInput.getText().toString());
 
             }
         });
@@ -46,28 +55,60 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+/*    public void updateUI(Stock stock){
+        //nameInput = (EditText) findViewById(R.id.nameInput);
+        *//*symbolOutput = findViewById(R.id.symbolOutput);
+        nameOutput = findViewById(R.id.nameOutput);
+        priceOutput = findViewById(R.id.priceOutput);
+        timeOutput = findViewById(R.id.timeOutput);
+        changeOutput = findViewById(R.id.changeOutput);
+        weekOutput = findViewById(R.id.weekOutput);*//*
+
+        symbolOutput.setText(stock.getSymbol());
+        nameOutput.setText(stock.getName());
+        priceOutput.setText(stock.getLastTradePrice());
+        timeOutput.setText(stock.getLastTradeTime());
+        changeOutput.setText(stock.getChange());
+        weekOutput.setText(stock.getRange());
+
+
+    }*/
+
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        String input = nameInput.getText().toString();
-        savedInstanceState.putString("input", input);
-        savedInstanceState.putString("symbol", symbolOutput.getText().toString());
-        savedInstanceState.putString("name", nameOutput.getText().toString());
-        savedInstanceState.putString("price", priceOutput.getText().toString());
-        savedInstanceState.putString("time", timeOutput.getText().toString());
-        savedInstanceState.putString("change", changeOutput.getText().toString());
-        savedInstanceState.putString("week", weekOutput.getText().toString());
+        nameInput.setText(savedInstanceState.getString("input"));
+        symbolOutput.setText(savedInstanceState.getString("symbol"));
+        nameOutput.setText(savedInstanceState.getString("name"));
+        priceOutput.setText(savedInstanceState.getString("price"));
+        timeOutput.setText(savedInstanceState.getString("time"));
+        changeOutput.setText(savedInstanceState.getString("change"));
+        weekOutput.setText(savedInstanceState.getString("week"));
+
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        nameInput.setText(outState.getString("input"));
-        symbolOutput.setText(outState.getString("symbol"));
-        nameOutput.setText(outState.getString("name"));
-        priceOutput.setText(outState.getString("price"));
-        timeOutput.setText(outState.getString("time"));
-        changeOutput.setText(outState.getString("change"));
-        weekOutput.setText(outState.getString("week"));
+        String input = nameInput.getText().toString();
+        outState.putString("input", input);
+        outState.putString("symbol", symbolOutput.getText().toString());
+        outState.putString("name", nameOutput.getText().toString());
+        outState.putString("price", priceOutput.getText().toString());
+        outState.putString("time", timeOutput.getText().toString());
+        outState.putString("change", changeOutput.getText().toString());
+        outState.putString("week", weekOutput.getText().toString());
+
     }
+
+    /*@Override
+    public void processFinish(Stock stock) {
+        symbolOutput.setText(stock.getSymbol());
+        nameOutput.setText(stock.getName());
+        priceOutput.setText(stock.getLastTradePrice());
+        timeOutput.setText(stock.getLastTradeTime());
+        changeOutput.setText(stock.getChange());
+        weekOutput.setText(stock.getRange());
+
+    }*/
 }
